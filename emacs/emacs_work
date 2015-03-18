@@ -1,0 +1,103 @@
+;(add-to-list 'load-path "~/.emacs.d/cedet/")
+;(require 'cedet-devel-load)
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(ac-auto-show-menu t)
+ '(ac-auto-start nil)
+ '(ac-expand-on-auto-complete t)
+ '(ac-modes (quote (emacs-lisp-mode lisp-interaction-mode c-mode cc-mode c++-mode java-mode clojure-mode scala-mode scheme-mode ocaml-mode tuareg-mode perl-mode cperl-mode python-mode ruby-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode django-mode django-html-mode)))
+ '(ac-show-menu-immediately-on-auto-complete t)
+ '(ac-use-menu-map t)
+ '(compilation-ask-about-save nil)
+ '(compilation-scroll-output (quote first-error))
+ '(compilation-skip-threshold 2)
+ '(compilation-window-height 7)
+ '(cua-mode t nil (cua-base))
+ '(directory-abbrev-alist nil)
+ '(ede-project-directories (quote ("/home/pawel/VS")))
+ '(global-auto-complete-mode t)
+ '(global-auto-revert-mode t)
+ '(global-hl-line-mode t)
+ '(global-semantic-highlight-func-mode t nil (semantic/util-modes))
+ '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic/idle))
+ '(global-visual-line-mode t)
+ '(gtags-auto-update t)
+ '(gtags-path-style (quote relative))
+ '(indent-tabs-mode nil)
+ '(inhibit-startup-screen t)
+ '(kill-whole-line t)
+ '(semantic-default-submodes (quote (global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
+ '(show-paren-mode 1)
+ '(standard-indent 2)
+ '(tab-stop-list (quote (2 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)))
+ '(todoo-show-pop-up-window nil)
+ '(yas/global-mode nil nil (yasnippet)))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(hl-line ((t (:background "darkviolet" :foreground "white")))))
+
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
+(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
+(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
+(semantic-mode 1)
+(global-ede-mode 1)
+
+(delete-selection-mode t)
+(require 'color-theme)
+(color-theme-initialize)
+(color-theme-charcoal-black)
+
+(hl-line-mode)
+
+(setq backup-directory-alist
+      `((".*" . ,"~/tmp/emacs")))
+(setq auto-save-file-name-transforms
+      `((".*" ,"~/tmp/emacs" t)))
+
+(global-set-key (kbd "C-<tab>") 'buffer-menu)
+(global-set-key (kbd "M-<left>") 'windmove-left)
+(global-set-key (kbd "M-<right>") 'windmove-right)
+(global-set-key (kbd "M-<up>") 'windmove-up)
+(global-set-key (kbd "M-<down>") 'windmove-down)
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+(global-set-key (kbd "<f12>") 'todoo-or-close-todoo)
+(global-set-key (kbd "<backtab>") 'auto-complete)
+(global-set-key (kbd "<f5>") 'compile)
+(global-set-key (kbd "C-x <up>") 'ff-find-other-file)
+(global-set-key (kbd "<S-delete>") 'kill-whole-line)
+
+(defun todoo-or-close-todoo()
+  (interactive)
+  (if (eq major-mode 'todoo-mode)
+      (call-interactively 'todoo-save-and-exit)
+    (call-interactively 'todoo)))
+
+(add-to-list 'load-path "~/.emacs.d/")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
+(ac-config-default)
+
+(load-file "/usr/local/share/gtags/gtags.el")
+
+(defun my-django-mode()
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/yasnippet/")
+  (require 'yasnippet)
+  (yas/initialize)
+    
+  (add-to-list 'load-path "~/.emacs.d/django-mode/")
+  (require 'django-html-mode)
+  (require 'django-mode)
+  (yas/load-directory "/home/pawel/.emacs.d/django-mode/snippets")
+  (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+  )
+
+(message ".emacs ok!")
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
