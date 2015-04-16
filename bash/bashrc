@@ -1,0 +1,6 @@
+alias em="emacsclient -t -nw"
+alias eq="emacsclient -c -n -q"
+alias emacs="emacsclient -c -n"
+alias grepnir="grep -niIr"
+
+export EDITOR="emacsclient -t"
