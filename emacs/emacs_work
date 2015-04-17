@@ -33,8 +33,7 @@
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(pop-up-windows nil)
- '(same-window-buffer-names (quote ("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*")))
- '(same-window-regexps (quote ("\\*rsh-[^-]*\\*\\(\\|<[0-9]*>\\)" "\\*telnet-.*\\*\\(\\|<[0-9]+>\\)" "^\\*rlogin-.*\\*\\(\\|<[0-9]+>\\)" "\\*info\\*\\(\\|<[0-9]+>\\)" "\\*gud-.*\\*\\(\\|<[0-9]+>\\)" "\\`\\*Customiz.*\\*\\'" "\\`^\\*.* [Hh]elp\\*'")))
+ '(same-window-buffer-names (quote ("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Completions*")))
  '(semantic-default-submodes (quote (global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
  '(show-paren-mode t)
  '(standard-indent 2)
@@ -44,9 +43,9 @@
  '(tags-table-list (quote ("/home/pawel/VS/DTS1k/TAGS")))
  '(todoo-show-pop-up-window nil)
  '(wg-morph-on nil)
- '(wg-morph-terminal-hsteps 1)
- '(wg-morph-vsteps 1)
  '(wg-prefix-key "")
+ '(wg-query-for-save-on-emacs-exit nil)
+ '(wg-query-for-save-on-workgroups-mode-exit nil)
  '(workgroups-mode t)
  '(yas/global-mode nil nil (yasnippet)))
 (custom-set-faces
@@ -86,6 +85,7 @@
 (global-set-key (kbd "C-x <up>") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
 (global-set-key (kbd "C-.") 'find-tag)
+(global-set-key (kbd  "C->") 'find-tag-other-window)
 
 (defun todoo-or-close-todoo()
   (interactive)
@@ -121,6 +121,8 @@
   "Make the current window always display this buffer."
   nil " sticky" nil
   (set-window-dedicated-p (selected-window) sticky-buffer-mode))
+
+(sticky-buffer-mode)
 
 (add-hook 'delete-frame-functions
           (lambda (frame)
