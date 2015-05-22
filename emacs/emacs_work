@@ -1,5 +1,8 @@
-;(add-to-list 'load-path "~/.emacs.d/cedet/")
-;(require 'cedet-devel-load)
+(message ".emacs start")
+(add-to-list 'load-path "~/.emacs.d/")
+(load "minimial-cedet-config.el")
+(add-to-list 'load-path "~/.emacs.d/ecb")
+(require 'ecb)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -21,6 +24,10 @@
  '(compilation-window-height 7)
  '(cua-mode t nil (cua-base))
  '(directory-abbrev-alist nil)
+ '(ecb-layout-name "left14")
+ '(ecb-layout-window-sizes (quote (("left14" (ecb-directories-buffer-name 0.3284313725490196 . 0.74) (ecb-history-buffer-name 0.3284313725490196 . 0.24)))))
+ '(ecb-options-version "2.40")
+ '(ecb-tip-of-the-day nil)
  '(ede-project-directories (quote ("/home/pawel/VS")))
  '(global-auto-complete-mode t)
  '(global-auto-revert-mode t)
@@ -55,12 +62,6 @@
   ;; If there is more than one, they won't work right.
  '(hl-line ((t (:background "darkviolet" :foreground "white")))))
 
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode t)
-(add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode t)
-(add-to-list 'semantic-default-submodes 'global-cedet-m3-minor-mode t)
-(semantic-mode 1)
-(global-ede-mode 1)
-
 (delete-selection-mode t)
 (require 'color-theme)
 (color-theme-initialize)
@@ -81,6 +82,8 @@
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "<f12>") 'todoo-or-close-todoo)
 (global-set-key (kbd "<backtab>") 'auto-complete)
+(global-set-key (kbd "<f2>") 'ecb-toggle-compile-window)
+(global-set-key (kbd "<S-f2>") 'ecb-toggle-ecb-windows)
 (global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "C-x <up>") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
@@ -93,12 +96,10 @@
       (call-interactively 'todoo-save-and-exit)
     (call-interactively 'todoo)))
 
-(add-to-list 'load-path "~/.emacs.d/")
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-(ac-config-default)
-
-(load-file "/usr/local/share/gtags/gtags.el")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(setq ac-comphist-file (expand-file-name
+												"~/.emacs.d/ac-comphist.dat"))
 
 (defun my-django-mode()
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/yasnippet/")
@@ -115,7 +116,7 @@
 (require 'cl-lib)
 (add-to-list 'load-path "~/.emacs.d/smarttabs/")
 (require 'smart-tabs-mode)
-(smart-tabs-insinuate 'c 'c++ 'python)
+(smart-tabs-insinuate 'c 'c++)
 
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
@@ -133,7 +134,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/workgroups.el/")
 (require 'workgroups)
-(require 'joseph-single-dired.el)
+(require 'joseph-single-dired)
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
