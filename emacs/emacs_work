@@ -3,6 +3,7 @@
 (load "minimial-cedet-config.el")
 (add-to-list 'load-path "~/.emacs.d/ecb")
 (require 'ecb)
+(require 'auto-complete)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
@@ -20,6 +21,7 @@
  '(c-basic-offset 2)
  '(c-default-style (quote ((java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
  '(c-offsets-alist (quote ((substatement-open . 0))))
+ '(clean-buffer-list-kill-never-buffer-names (quote ("*scratch*" "*Messages*" "*server*" "*compilation*" "*Python*")))
  '(compilation-ask-about-save nil)
  '(compilation-scroll-output (quote first-error))
  '(compilation-skip-threshold 2)
@@ -27,6 +29,7 @@
  '(cua-mode t nil (cua-base))
  '(directory-abbrev-alist nil)
  '(ecb-auto-activate t)
+ '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*" . t))))
  '(ecb-compile-window-height 10)
  '(ecb-compile-window-prevent-shrink-below-height t)
  '(ecb-compile-window-temporally-enlarge nil)
@@ -37,7 +40,7 @@
  '(ecb-source-path (quote ("~/VS/DTS1k/glade/src" "~/VS/DTS1k/glade/include" "~/VS/external_libraries/boost_1_55_0/build/include")))
  '(ecb-tip-of-the-day nil)
  '(ecb-tree-indent 2)
- '(ede-project-directories (quote ("/home/pawel/VS")))
+ '(ede-project-directories (quote ("/home/pawel/VS/DTS1k" "/home/pawel/VS")))
  '(global-auto-complete-mode t)
  '(global-auto-revert-mode t)
  '(global-hl-line-mode t)
@@ -48,6 +51,7 @@
  '(gtags-path-style (quote relative))
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
+ '(midnight-mode t nil (midnight))
  '(pop-up-windows t)
  '(popwin-mode nil)
  '(popwin:adjust-other-windows t)
@@ -67,7 +71,9 @@
  '(wg-query-for-save-on-emacs-exit nil)
  '(wg-query-for-save-on-workgroups-mode-exit nil)
  '(workgroups-mode t)
- '(yas/global-mode nil nil (yasnippet)))
+ '(yas/also-auto-indent-first-line nil)
+ '(yas/global-mode nil nil (yasnippet))
+ '(yas/indent-line (quote fixed)))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -85,7 +91,7 @@
 (setq backup-directory-alist
       `((".*" . ,"~/tmp/emacs")))
 (setq auto-save-file-name-transforms
-      `((".*" ,"~/tmp/emacs" t)))
+      `((".*" ,"~/tmp/emacs" t)))				
 
 (global-set-key (kbd "C-<tab>") 'buffer-menu)
 (global-set-key (kbd "M-<left>") 'windmove-left)
@@ -94,18 +100,26 @@
 (global-set-key (kbd "M-<down>") 'windmove-down)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "<f12>") 'todoo-or-close-todoo)
-(global-set-key (kbd "<backtab>") 'semantic-ia-complete-symbol-menu)
-(global-set-key (kbd "<C-S-lefttab>") 'auto-complete)
+(global-set-key (kbd "<C-S-iso-lefttab>") 'auto-complete)
 (define-key ac-completing-map "C-g" 'ac-stop)
 (global-set-key (kbd "C-e") 'ecb-goto-window-history)
 (global-set-key (kbd "C-S-e") 'ecb-goto-window-directories)
 (global-set-key (kbd "<S-f2>") 'ecb-toggle-compile-window)
 (global-set-key (kbd "<f2>") 'ecb-toggle-ecb-windows)
-(global-set-key (kbd "<f5>") 'compile)
 (global-set-key (kbd "C-x <up>") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
-(global-set-key (kbd "C-.") 'find-tag)
-(global-set-key (kbd  "C->") 'find-tag-other-window)
+
+(ido-mode t)
+
+(defun my-c-hook()
+	(setq compile-command "make -C ~/VS/DTS1k/glade/Debug/ -j 10")
+	(local-set-key (kbd "<backtab>") 'semantic-ia-complete-symbol-menu)
+	(local-set-key (kbd "<f5>") 'compile)
+	(local-set-key (kbd "C-.") 'semantic-ia-fast-jump)
+	(ecb-activate)
+	)
+(add-hook 'c++-mode-hook 'my-c-hook)
+(add-hook 'c-mode-hook 'my-c-hook)
 
 (defun todoo-or-close-todoo()
   (interactive)
@@ -113,16 +127,81 @@
       (call-interactively 'todoo-save-and-exit)
     (call-interactively 'todoo)))
 
+(add-hook 'post-command-hook
+          (lambda ()
+            (let ((messages (get-buffer "*Messages*")))
+              (unless (eq (current-buffer) messages)
+                (with-current-buffer messages
+                  (goto-char (point-max)))))))
+
+(add-hook 'comint-mode-hook
+					(lambda()
+						(local-set-key (kbd "<up>") 'comint-previous-input)
+						(local-set-key (kbd "<down>") 'comint-next-input)
+						)
+					)
+
+(defun delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer)))))
+	)
+
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-comphist-file (expand-file-name
-												"~/.emacs.d/ac-comphist.dat"))
+(setq ac-comphist-file (expand-file-name "~/.emacs.d/ac-comphist.dat"))
+(defun auto-complete-mode-maybe ()
+  "No maybe for you. Only AC!"
+  (unless (minibufferp (current-buffer))
+    (auto-complete-mode 1))
+	)
 
-(defun my-django-mode()
+;; (defun python-send-buffer-with-my-args (args)
+;;   (interactive "sPython arguments: ")
+;;   (let ((source-buffer (current-buffer)))
+;;     (with-temp-buffer
+;;       (insert "import sys; sys.argv = '''" args "'''.split()\n")
+;;       (insert-buffer-substring source-buffer)
+;;       (python-send-buffer)
+;; 			)
+;; 		(switch-to-buffer "*Python*")
+;; 		(switch-to-buffer source-buffer)
+;; 		)
+;; 	)
+
+(defun my-python-hook()
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/yasnippet/")
   (require 'yasnippet)
   (yas/initialize)
-    
+	
+							;; (setq ac-sources '(ac-source-pycomplete
+							;; 									 ac-source-yasnippet
+							;; 									 ac-source-abbrev
+							;; 									 ac-source-dictionary
+							;; 									 ac-source-words-in-same-mode-buffers)
+	;;(ac-set-trigger-key "<backtab>")
+	(global-set-key (kbd "<backtab>") 'auto-complete)
+	(setq compile-command (concat "export TRANSLATION_SCRIPT=\"/home/pawel/VS/DTS1k/Services/Debug/TranslationCLI\"; python " (buffer-file-name) " "))
+	(global-set-key (kbd "<f5>") 'compile)
+	(setq py-smart-indentation t)
+
+	;; (setq py-shell-switch-buffers-on-execute-p t)
+	;; (setq py-use-current-dir-when-execute-p t)
+	;; (setq py-split-windows-on-execute-p nil)
+
+	)
+(add-hook 'python-mode-hook 'my-python-hook)
+
+(defun my-django-mode()
+	(python-mode t)
+
   (add-to-list 'load-path "~/.emacs.d/django-mode/")
   (require 'django-html-mode)
   (require 'django-mode)
@@ -135,15 +214,6 @@
 (require 'smart-tabs-mode)
 (smart-tabs-insinuate 'c 'c++)
 
-(define-minor-mode sticky-buffer-mode
-  "Make the current window always display this buffer."
-  nil " sticky" nil
-  (set-window-dedicated-p (selected-window) sticky-buffer-mode))
-
-(sticky-buffer-mode)
-
-(add-to-list 'load-path "~/.emacs.d/workgroups.el/")
-(require 'workgroups)
 (require 'joseph-single-dired)
 
 (put 'upcase-region 'disabled nil)
