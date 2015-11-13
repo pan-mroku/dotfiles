@@ -1,0 +1,11 @@
+[merge]
+	tool = diffuse
+[mergetool "diffuse"]
+	cmd = "diffuse -b"		
+[push]
+	default = tracking
+[color]
+	ui = auto
+[alias]
+	shortstatus = status -sb
+	diffw = diff --ignore-space-change
