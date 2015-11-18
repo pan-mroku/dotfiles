@@ -9,3 +9,6 @@
 [alias]
 	shortstatus = status -sb
 	diffw = diff --ignore-space-change
+	l = log --graph
+[log]
+	decorate = true

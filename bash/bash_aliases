@@ -1,0 +1,7 @@
+alias eq="emacsclient -c -n -q -a ''"
+alias emacs="emacsclient -c -a ''"
+alias grepnir="grep -niIr"
+
+export PATH="/home/pawel/bin:$PATH"
+export EDITOR="em.sh"
+export PYTHONSTARTUP=~/.pythonrc
