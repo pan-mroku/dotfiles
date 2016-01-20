@@ -1,70 +1,201 @@
 (message ".emacs start")
-(add-to-list 'load-path "~/.emacs.d/")
-(load "minimial-cedet-config.el")
-(add-to-list 'load-path "~/.emacs.d/ecb")
-(require 'ecb)
-(require 'auto-complete)
+
+(setq cedet-root-path (file-name-as-directory "~/.emacs.d/lisp/cedet/"))
+(load-file (concat cedet-root-path "cedet-devel-load.el"))
+(add-to-list 'load-path (concat cedet-root-path "contrib"))
+(add-to-list 'Info-directory-list
+						 (concat cedet-root-path "/doc/info"))
+
+;; http://www.emacswiki.org/emacs/CEDET_Quickstart
+(require 'cedet)
+(require 'eieio)
+(require 'eieio-speedbar)
+(require 'eieio-opt)
+(require 'eieio-base)
+(require 'ede/source)
+(require 'ede/base)
+(require 'ede/auto)
+(require 'ede/proj)
+(require 'ede/proj-archive)
+(require 'ede/proj-aux)
+(require 'ede/proj-comp)
+(require 'ede/proj-elisp)
+(require 'ede/proj-info)
+(require 'ede/proj-misc)
+(require 'ede/proj-obj)
+(require 'ede/proj-prog)
+(require 'ede/proj-scheme)
+(require 'ede/proj-shared)
+
+(if (< emacs-major-version 24)
+		(progn 
+			(add-to-list 'load-path "~/.emacs.d/lisp/before24")
+			
+
+			(add-to-list 'load-path "~/.emacs.d/lisp/ecb")
+			(require 'ecb))
+	(progn
+		(require 'package)
+		(add-to-list 'package-archives
+								 '("melpa" . "https://melpa.org/packages/"))
+		(package-initialize))
+	)
+
+;;---------------------------------------------------------------------------------------------------
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ac-auto-show-menu t)
- '(ac-auto-start 2)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ac-auto-show-menu nil)
+ '(ac-auto-start nil)
+ '(ac-candidate-menu-min 1)
  '(ac-comphist-threshold 0.2)
- '(ac-delay 0.5)
- '(ac-expand-on-auto-complete nil)
- '(ac-modes (quote (emacs-lisp-mode lisp-interaction-mode c-mode cc-mode c++-mode java-mode clojure-mode scala-mode scheme-mode ocaml-mode tuareg-mode perl-mode cperl-mode python-mode ruby-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode django-mode django-html-mode)))
+ '(ac-delay 0.0)
+ '(ac-disable-inline nil)
+ '(ac-expand-on-auto-complete t)
+ '(ac-ignore-case (quote smart))
+ '(ac-menu-height 20)
+ '(ac-modes
+	 (quote
+		(emacs-lisp-mode lisp-interaction-mode c-mode cc-mode c++-mode java-mode clojure-mode scala-mode scheme-mode ocaml-mode tuareg-mode perl-mode cperl-mode python-mode ruby-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode django-mode django-html-mode)))
  '(ac-show-menu-immediately-on-auto-complete t)
+ '(ac-use-fuzzy t)
  '(ac-use-menu-map t)
+ '(ansi-color-names-vector
+	 ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(c-basic-offset 2)
- '(c-default-style (quote ((java-mode . "java") (awk-mode . "awk") (other . "gnu"))))
+ '(c-default-style
+	 (quote
+		((java-mode . "java")
+		 (awk-mode . "awk")
+		 (other . "gnu"))))
  '(c-offsets-alist (quote ((substatement-open . 0))))
- '(clean-buffer-list-kill-never-buffer-names (quote ("*scratch*" "*Messages*" "*server*" "*compilation*" "*Python*")))
+ '(cc-search-directories
+	 (quote
+		("." "/usr/include" "/usr/local/include/*" "../include" "../src")))
+ '(clean-buffer-list-kill-never-buffer-names
+	 (quote
+		("*scratch*" "*Messages*" "*server*" "*compilation*" "*Python*")))
  '(compilation-ask-about-save nil)
  '(compilation-scroll-output (quote first-error))
  '(compilation-skip-threshold 2)
  '(compilation-window-height 7)
  '(cua-mode t nil (cua-base))
+ '(custom-safe-themes
+	 (quote
+		("790f741ffa83f2d75897a0cd44f2aa625ff801f54b367fc00f55679e1769a176" "98a619757483dc6614c266107ab6b19d315f93267e535ec89b7af3d62fb83cad" "fc0c179ce77997ecb6a7833310587131f319006ef2f630c5a1fec1a9307bff45" "62408b3adcd05f887b6357e5bd9221652984a389e9b015f87bbc596aba62ba48" default)))
  '(directory-abbrev-alist nil)
  '(ecb-auto-activate t)
- '(ecb-compilation-buffer-names (quote (("*Calculator*") ("*vc*") ("*vc-diff*") ("*Apropos*") ("*Occur*") ("*shell*") ("\\*[cC]ompilation.*\\*" . t) ("\\*i?grep.*\\*" . t) ("*JDEE Compile Server*") ("*Help*") ("*Completions*") ("*Backtrace*") ("*Compile-log*") ("*bsh*") ("*Messages*" . t))))
+ '(ecb-compilation-buffer-names
+	 (quote
+		(("*Calculator*")
+		 ("*vc*")
+		 ("*vc-diff*")
+		 ("*Apropos*")
+		 ("*Occur*")
+		 ("*shell*")
+		 ("\\*[cC]ompilation.*\\*" . t)
+		 ("\\*i?grep.*\\*" . t)
+		 ("*JDEE Compile Server*")
+		 ("*Help*")
+		 ("*Completions*")
+		 ("*Backtrace*")
+		 ("*Compile-log*")
+		 ("*bsh*")
+		 ("*Messages*" . t))))
  '(ecb-compile-window-height 10)
  '(ecb-compile-window-prevent-shrink-below-height t)
  '(ecb-compile-window-temporally-enlarge nil)
  '(ecb-history-make-buckets (quote extension))
  '(ecb-layout-name "left16")
- '(ecb-layout-window-sizes (quote (("left16" ("ecb-history-buffer-name" 0.2 . 0.75) (ecb-directories-buffer-name 0.2 . 0.25)))))
+ '(ecb-layout-window-sizes
+	 (quote
+		(("left16"
+			("ecb-history-buffer-name" 0.2 . 0.75)
+			(ecb-directories-buffer-name 0.2 . 0.25)))))
  '(ecb-options-version "2.40")
- '(ecb-source-path (quote ("~/VS/DTS1k/glade/src" "~/VS/DTS1k/glade/include" "~/VS/external_libraries/boost_1_55_0/build/include")))
  '(ecb-tip-of-the-day nil)
  '(ecb-tree-indent 2)
- '(ede-project-directories (quote ("/home/pawel/VS/DTS1k" "/home/pawel/VS")))
+ '(egg-git-diff-options (quote ("--patience" "--ignore-space-change")))
+ '(etags-table-search-up-depth 5)
+ '(gdb-many-windows nil)
+ '(gdb-same-frame nil)
+ '(gdb-show-main t)
+ '(ggtags-auto-jump-to-match nil)
+ '(ggtags-mode-prefix-key "")
+ '(ggtags-sort-by-nearness t)
  '(global-auto-complete-mode t)
  '(global-auto-revert-mode t)
  '(global-hl-line-mode t)
- '(global-semantic-highlight-func-mode t nil (semantic/util-modes))
+ '(global-semantic-highlight-func-mode nil)
+ '(global-semantic-idle-breadcrumbs-mode nil nil (semantic/idle))
+ '(global-semantic-idle-completions-mode nil nil (semantic/idle))
  '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic/idle))
+ '(global-semantic-idle-summary-mode t)
+ '(global-semantic-show-parser-state-mode t)
  '(global-visual-line-mode t)
  '(gtags-auto-update t)
+ '(gtags-grep-all-text-files t)
  '(gtags-path-style (quote relative))
+ '(gud-tooltip-mode t)
  '(inhibit-startup-screen t)
+ '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(kill-whole-line t)
  '(midnight-mode t nil (midnight))
  '(pop-up-windows t)
  '(popwin-mode nil)
  '(popwin:adjust-other-windows t)
- '(popwin:special-display-config (quote (("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) (compilation-mode :noselect t) (grep-mode :noselect t) (occur-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") (" *undo-tree*" :width 60 :position right) ("^\\*anything.*\\*$" :regexp t) ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
- '(same-window-buffer-names (quote ("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Completions*")))
- '(semantic-c-dependency-system-include-path (quote ("/usr/include" "/usr/include/gtk-2.0" "~/VS/external_libraries/boost_1_55_0/build/include/")))
- '(semantic-default-submodes (quote (global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode)))
+ '(popwin:special-display-config
+	 (quote
+		(("*Miniedit Help*" :noselect t)
+		 (help-mode)
+		 (completion-list-mode :noselect t)
+		 (compilation-mode :noselect t)
+		 (grep-mode :noselect t)
+		 (occur-mode :noselect t)
+		 ("*Pp Macroexpand Output*" :noselect t)
+		 ("*Shell Command Output*")
+		 ("*vc-diff*")
+		 ("*vc-change-log*")
+		 (" *undo-tree*" :width 60 :position right)
+		 ("^\\*anything.*\\*$" :regexp t)
+		 ("*slime-apropos*")
+		 ("*slime-macroexpansion*")
+		 ("*slime-description*")
+		 ("*slime-compilation*" :noselect t)
+		 ("*slime-xref*")
+		 (sldb-mode :stick t)
+		 (slime-repl-mode)
+		 (slime-connection-list-mode))))
+ '(pos-tip-background-color "color-23")
+ '(pos-tip-foreground-color "#FFFFC8")
+ '(rtags-completions-enabled t)
+ '(rtags-find-file-case-insensitive t)
+ '(same-window-buffer-names
+	 (quote
+		("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Completions*")))
+ '(semantic-analyze-summary-function (quote semantic-format-tag-uml-prototype))
+ '(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-ghost))
+ '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-ghost))
+ '(semantic-completion-displayor-format-tag-function (quote semantic-format-tag-prototype))
+ '(semantic-default-submodes
+	 (quote
+		(global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-completions-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode global-semantic-idle-summary-mode global-semantic-idle-local-symbol-highlight-mode)))
+ '(semantic-displayor-tooltip-mode (quote verbose))
+ '(semantic-ia-completion-menu-format-tag-function (quote semantic-format-tag-prototype))
+ '(semantic-idle-scheduler-idle-time 0.1)
+ '(semanticdb-find-default-throttle
+	 (quote
+		(local project unloaded system recursive omniscience)))
  '(show-paren-mode t)
+ '(speedbar-default-position (quote right))
+ '(speedbar-sort-tags t)
  '(standard-indent 2)
  '(tab-stop-list (quote (2 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)))
  '(tab-width 2)
  '(tags-revert-without-query t)
- '(tags-table-list (quote ("/home/pawel/VS/DTS1k/TAGS")))
  '(todoo-show-pop-up-window nil)
  '(wg-morph-on nil)
  '(wg-prefix-key "")
@@ -73,18 +204,40 @@
  '(workgroups-mode t)
  '(yas/also-auto-indent-first-line nil)
  '(yas/global-mode nil nil (yasnippet))
- '(yas/indent-line (quote fixed)))
+ '(yas/indent-line (quote fixed))
+ '(ycmd-server-command (quote ("python" "/home/pawel/tools/ycmd/ycmd/"))))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(hl-line ((t (:background "darkviolet" :foreground "white")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(error ((t (:foreground "red1" :weight bold))))
+ '(hl-line ((t (:background "darkviolet" :foreground "white"))))
+ '(region ((t (:background "SlateBlue3"))))
+ '(semantic-highlight-func-current-tag-face ((t (:box (:line-width 1 :color "grey75" :style pressed-button)))))
+ '(warning ((t (:foreground "gold" :weight bold)))))
+
+;;---------------------------------------------------------------------------------------------------
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+(if (< emacs-major-version 24)
+		(progn
+			(add-to-list 'load-path "~/.emacs.d/lisp/cl-lib/")
+			(require 'cl-lib)
+			(require 'auto-complete)
+			(require 'auto-complete-config)))
+
+(if (< emacs-major-version 24)
+		(progn
+			(require 'color-theme)
+			(color-theme-initialize)
+			(color-theme-charcoal-black))
+	(load-theme 'darktooth t))
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (delete-selection-mode t)
-(require 'color-theme)
-(color-theme-initialize)
-(color-theme-charcoal-black)
 
 (hl-line-mode)
 
@@ -92,6 +245,125 @@
       `((".*" . ,"~/tmp/emacs")))
 (setq auto-save-file-name-transforms
       `((".*" ,"~/tmp/emacs" t)))				
+
+(ido-mode t)
+
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(setq ac-comphist-file (expand-file-name "~/.emacs.d/ac-comphist.dat"))
+(defun auto-complete-mode-maybe ()
+  "No maybe for you. Only AC!"
+  (unless (minibufferp (current-buffer))
+    (auto-complete-mode 1))
+	)
+
+;; ;; Activate semantic
+(semantic-mode 1)
+(require 'semantic/ia)
+(require 'semantic/bovine/gcc)
+
+;; (require 'company-ycmd)
+;; (company-ycmd-setup)
+(require 'auto-complete-clang)
+(set 'my/include-dirs '(
+												"-I/usr/include/c++/4.4"
+												"-I/usr/include/c++/4.4/i486-linux-gnu"
+												"-I/usr/include/c++/4.4/backward"
+												"-I/usr/local/include"
+												"-I/usr/lib/gcc/i486-linux-gnu/4.4.5/include"
+												"-I/usr/lib/gcc/i486-linux-gnu/4.4.5/include-fixed"
+												"-I/usr/include/i486-linux-gnu"
+												"-I/usr/include"
+												))
+(set 'ac-clang-flags  (append my/include-dirs ac-clang-flags))
+;; customisation of modes
+(defun my/semantic-hook ()
+	(add-to-list 'ac-sources 'ac-source-semantic)
+	;; (add-to-list 'ac-sources 'ac-source-clang)
+  )
+(add-hook 'c-mode-common-hook 'my/semantic-hook)
+(add-hook 'c++-mode-common-hook 'my/semantic-hook)
+;; (add-hook 'lisp-mode-hook 'my/semantic-hook)
+;; (add-hook 'scheme-mode-hook 'my/semantic-hook)
+;; (add-hook 'emacs-lisp-mode-hook 'my/semantic-hook)
+;; (add-hook 'erlang-mode-hook 'my/semantic-hook)
+
+(semanticdb-enable-gnu-global-databases 'c-mode t)
+(semanticdb-enable-gnu-global-databases 'c++-mode t)
+
+(if	(< emacs-major-version 24)
+		(progn
+			(load-file "/usr/local/share/gtags/gtags.el")
+			(when (cedet-ectag-version-check t)
+				(semantic-load-enable-primary-ectags-support))))
+
+(defun my/c-hook()
+	(global-set-key (kbd "<f6>") 'gud-gdb)
+	(local-set-key (kbd "<C-S-iso-lefttab>") 'semantic-ia-complete-symbol-menu)
+	(local-set-key (kbd "C-.") 'semantic-ia-fast-jump)
+	(ecb-activate)
+	(if (>= emacs-major-version 24)
+			(progn
+				(cppcm-reload-all)
+				))
+	)
+(add-hook 'c++-mode-hook 'my/c-hook)
+(add-hook 'c-mode-hook 'my/c-hook)
+
+(global-ede-mode 1)
+
+(add-to-list 'load-path "~/.emacs.d/lisp/move-border/")
+(require 'move-border)
+
+(defun todoo-or-close-todoo()
+  (interactive)
+  (if (eq major-mode 'todoo-mode)
+      (call-interactively 'todoo-save-and-exit)
+    (call-interactively 'todoo)))
+
+(add-hook 'comint-mode-hook
+					(lambda()
+						(local-set-key (kbd "<up>") 'comint-previous-input)
+						(local-set-key (kbd "<down>") 'comint-next-input)
+						)
+					)
+
+(defun my/python-hook()
+	(if (< emacs-major-version 24)
+			(progn
+				(add-to-list 'load-path "/usr/share/emacs/site-lisp/yasnippet/")
+				(require 'yasnippet)))
+  (yas/initialize)
+	
+	;; (setq ac-sources '(ac-source-pycomplete
+	;; 									 ac-source-yasnippet
+	;; 									 ac-source-abbrev
+	;; 									 ac-source-dictionary
+	;; 									 ac-source-words-in-same-mode-buffers)
+	(global-set-key (kbd "<backtab>") 'auto-complete)
+	(setq py-smart-indentation t)
+	)
+(add-hook 'python-mode-hook 'my/python-hook)
+
+(defun my/django-mode()
+	(python-mode t)
+
+  (add-to-list 'load-path "~/.emacs.d/lisp/django-mode/")
+  (require 'django-html-mode)
+  (require 'django-mode)
+  (yas/load-directory "/home/pawel/.emacs.d/lisp/django-mode/snippets")
+  (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
+  )
+
+(add-to-list 'load-path "~/.emacs.d/lisp/smarttabs/")
+(require 'smart-tabs-mode)
+(smart-tabs-insinuate 'c 'c++)
+
+(require 'joseph-single-dired)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;;---------------------------------------------------------------------------------------------------
 
 (global-set-key (kbd "C-<tab>") 'buffer-menu)
 (global-set-key (kbd "M-<left>") 'windmove-left)
@@ -107,115 +379,26 @@
 (global-set-key (kbd "<S-f2>") 'ecb-toggle-compile-window)
 (global-set-key (kbd "<f2>") 'ecb-toggle-ecb-windows)
 (global-set-key (kbd "C-x <up>") 'ff-find-other-file)
+(global-set-key (kbd "C-x t") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
+(global-set-key (kbd "<f5>") 'compile)
+;; (global-set-key (kbd "M-S-<up>") 'move-border-up)
+;; (global-set-key (kbd "M-S-<down>") 'move-border-down)
+(global-set-key (kbd "C--") 'move-border-left)
+(global-set-key (kbd "C-=") 'move-border-right)
 
-(ido-mode t)
+;; terminator
+(define-key input-decode-map "\e[3~" [?\C-d])
+(define-key input-decode-map "\e[3;2~" [S-delete])
+(define-key input-decode-map "\e[5~" [prior])
+(define-key input-decode-map "\e[6~" [next])
+(define-key input-decode-map "\e[1;2A" [S-up])
+(define-key input-decode-map "\e[1;2B" [S-down])
+(define-key input-decode-map "\e[1;2C" [S-right])
+(define-key input-decode-map "\e[1;2D" [S-left])
+(define-key input-decode-map "\e[1;3A" [M-up])
+(define-key input-decode-map "\e[1;3B" [M-down])
+(define-key input-decode-map "\e[1;3C" [M-right])
+(define-key input-decode-map "\e[1;3D" [M-left])
 
-(defun my-c-hook()
-	(setq compile-command "make -C ~/VS/DTS1k/glade/Debug/ -j 10")
-	(local-set-key (kbd "<backtab>") 'semantic-ia-complete-symbol-menu)
-	(local-set-key (kbd "<f5>") 'compile)
-	(local-set-key (kbd "C-.") 'semantic-ia-fast-jump)
-	(ecb-activate)
-	)
-(add-hook 'c++-mode-hook 'my-c-hook)
-(add-hook 'c-mode-hook 'my-c-hook)
-
-(defun todoo-or-close-todoo()
-  (interactive)
-  (if (eq major-mode 'todoo-mode)
-      (call-interactively 'todoo-save-and-exit)
-    (call-interactively 'todoo)))
-
-(add-hook 'post-command-hook
-          (lambda ()
-            (let ((messages (get-buffer "*Messages*")))
-              (unless (eq (current-buffer) messages)
-                (with-current-buffer messages
-                  (goto-char (point-max)))))))
-
-(add-hook 'comint-mode-hook
-					(lambda()
-						(local-set-key (kbd "<up>") 'comint-previous-input)
-						(local-set-key (kbd "<down>") 'comint-next-input)
-						)
-					)
-
-(defun delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (when filename
-      (if (vc-backend filename)
-          (vc-delete-file filename)
-        (progn
-          (delete-file filename)
-          (message "Deleted file %s" filename)
-          (kill-buffer)))))
-	)
-
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-comphist-file (expand-file-name "~/.emacs.d/ac-comphist.dat"))
-(defun auto-complete-mode-maybe ()
-  "No maybe for you. Only AC!"
-  (unless (minibufferp (current-buffer))
-    (auto-complete-mode 1))
-	)
-
-;; (defun python-send-buffer-with-my-args (args)
-;;   (interactive "sPython arguments: ")
-;;   (let ((source-buffer (current-buffer)))
-;;     (with-temp-buffer
-;;       (insert "import sys; sys.argv = '''" args "'''.split()\n")
-;;       (insert-buffer-substring source-buffer)
-;;       (python-send-buffer)
-;; 			)
-;; 		(switch-to-buffer "*Python*")
-;; 		(switch-to-buffer source-buffer)
-;; 		)
-;; 	)
-
-(defun my-python-hook()
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/yasnippet/")
-  (require 'yasnippet)
-  (yas/initialize)
-	
-							;; (setq ac-sources '(ac-source-pycomplete
-							;; 									 ac-source-yasnippet
-							;; 									 ac-source-abbrev
-							;; 									 ac-source-dictionary
-							;; 									 ac-source-words-in-same-mode-buffers)
-	;;(ac-set-trigger-key "<backtab>")
-	(global-set-key (kbd "<backtab>") 'auto-complete)
-	(setq compile-command (concat "export TRANSLATION_SCRIPT=\"/home/pawel/VS/DTS1k/Services/Debug/TranslationCLI\"; python " (buffer-file-name) " "))
-	(global-set-key (kbd "<f5>") 'compile)
-	(setq py-smart-indentation t)
-
-	;; (setq py-shell-switch-buffers-on-execute-p t)
-	;; (setq py-use-current-dir-when-execute-p t)
-	;; (setq py-split-windows-on-execute-p nil)
-
-	)
-(add-hook 'python-mode-hook 'my-python-hook)
-
-(defun my-django-mode()
-	(python-mode t)
-
-  (add-to-list 'load-path "~/.emacs.d/django-mode/")
-  (require 'django-html-mode)
-  (require 'django-mode)
-  (yas/load-directory "/home/pawel/.emacs.d/django-mode/snippets")
-  (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
-  )
-
-(require 'cl-lib)
-(add-to-list 'load-path "~/.emacs.d/smarttabs/")
-(require 'smart-tabs-mode)
-(smart-tabs-insinuate 'c 'c++)
-
-(require 'joseph-single-dired)
-
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
 (message ".emacs ok!")

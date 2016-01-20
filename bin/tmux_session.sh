@@ -10,7 +10,7 @@ fi
 if [ -e "$SOCKETS_DIR/$1" ]; then
 		tmux -S "$SOCKETS_DIR/$1" attach
 else
-		tmux -S "$SOCKETS_DIR/$1"
+		tmux -S "$SOCKETS_DIR/$1" new-session -s "$1"
 fi
 
 rm "$SOCKETS_DIR/$1"

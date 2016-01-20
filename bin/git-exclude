@@ -1,0 +1,12 @@
+#!/bin/bash
+
+GIT_ROOT="`git rev-parse --show-toplevel`"
+
+if [ $# -lt 1 ]; then
+		cat "$GIT_ROOT"/.git/info/exclude
+		exit 1
+fi
+
+for FILE in "$@"; do
+		echo "`realpath "$FILE"`" | sed 's|'"$GIT_ROOT"'/||' >> "$GIT_ROOT"/.git/info/exclude
+done
