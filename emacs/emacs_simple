@@ -1,0 +1,58 @@
+(message ".emacs start")
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(cua-mode t nil (cua-base))
+ '(directory-abbrev-alist nil)
+ '(global-auto-revert-mode t)
+ '(global-hl-line-mode t)
+ '(global-visual-line-mode t)
+ '(inhibit-startup-screen t)
+ '(kill-whole-line t)
+ '(pop-up-windows t)
+ '(same-window-buffer-names (quote ("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Completions*")))
+ '(show-paren-mode t)
+ '(speedbar-default-position (quote right))
+ '(speedbar-sort-tags t)
+ '(standard-indent 2)
+ '(tab-stop-list (quote (2 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)))
+ '(tab-width 2))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+
+
+;;---------------------------------------------------------------------------------------------------
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+(delete-selection-mode t)
+(hl-line-mode)
+(setq backup-directory-alist
+      `((".*" . ,"/tmp/emacs")))
+(setq auto-save-file-name-transforms
+      `((".*" ,"/tmp/emacs" t)))				
+(ido-mode t)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+
+;;---------------------------------------------------------------------------------------------------
+
+(global-set-key (kbd "C-<tab>") 'buffer-menu)
+(global-set-key (kbd "M-<left>") 'windmove-left)
+(global-set-key (kbd "M-<right>") 'windmove-right)
+(global-set-key (kbd "M-<up>") 'windmove-up)
+(global-set-key (kbd "M-<down>") 'windmove-down)
+(global-set-key (kbd "C-a") 'mark-whole-buffer)
+(global-set-key (kbd "C-x <up>") 'ff-find-other-file)
+(global-set-key (kbd "C-x t") 'ff-find-other-file)
+(global-set-key (kbd "<S-delete>") 'kill-whole-line)
+
+(message ".emacs ok!")

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/usr/bin/emacsclient -t -nw -a '' $@
+emacsclient -t -nw -a '' $@
