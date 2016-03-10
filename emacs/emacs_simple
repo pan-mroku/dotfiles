@@ -55,4 +55,7 @@
 (global-set-key (kbd "C-x t") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
 
+(global-set-key (kbd "<C-S-iso-lefttab>") 'auto-complete)
+(define-key ac-completing-map "C-g" 'ac-stop)
+
 (message ".emacs ok!")
