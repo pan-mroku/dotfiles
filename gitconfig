@@ -10,5 +10,6 @@
 	s = status -sb
 	diffw = diff --ignore-space-change
 	l = log --graph
+	history = log --graph -p -w
 [log]
 	decorate = true
