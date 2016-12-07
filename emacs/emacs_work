@@ -30,8 +30,6 @@
 (if (< emacs-major-version 24)
 		(progn 
 			(add-to-list 'load-path "~/.emacs.d/lisp/before24")
-			
-
 			(add-to-list 'load-path "~/.emacs.d/lisp/ecb")
 			(require 'ecb))
 	(progn
@@ -48,19 +46,24 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-auto-show-menu nil)
+ '(ac-auto-show-menu t)
  '(ac-auto-start nil)
+ '(ac-candidate-limit 30)
  '(ac-candidate-menu-min 1)
  '(ac-comphist-threshold 0.2)
  '(ac-delay 0.0)
  '(ac-disable-inline nil)
- '(ac-expand-on-auto-complete t)
+ '(ac-expand-on-auto-complete nil)
  '(ac-ignore-case (quote smart))
  '(ac-menu-height 20)
  '(ac-modes
 	 (quote
 		(emacs-lisp-mode lisp-interaction-mode c-mode cc-mode c++-mode java-mode clojure-mode scala-mode scheme-mode ocaml-mode tuareg-mode perl-mode cperl-mode python-mode ruby-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode django-mode django-html-mode)))
+ '(ac-quick-help-delay 1.0)
+ '(ac-quick-help-height 10)
  '(ac-show-menu-immediately-on-auto-complete t)
+ '(ac-stop-words nil)
+ '(ac-trigger-key nil)
  '(ac-use-fuzzy t)
  '(ac-use-menu-map t)
  '(ansi-color-names-vector
@@ -78,6 +81,17 @@
  '(clean-buffer-list-kill-never-buffer-names
 	 (quote
 		("*scratch*" "*Messages*" "*server*" "*compilation*" "*Python*")))
+ '(company-auto-complete (quote (quote company-explicit-action-p)))
+ '(company-auto-complete-chars (quote (32 46)))
+ '(company-backends
+	 (quote
+		(company-cmake company-clang company-semantic company-bbdb company-nxml company-css company-eclim company-xcode company-capf company-files
+									 (company-dabbrev-code company-gtags company-etags company-keywords)
+									 company-oddmuse company-dabbrev)))
+ '(company-frontends
+	 (quote
+		(company-preview-if-just-one-frontend company-echo-metadata-frontend company-preview-if-just-one-frontend)))
+ '(company-minimum-prefix-length 2)
  '(compilation-ask-about-save nil)
  '(compilation-scroll-output (quote first-error))
  '(compilation-skip-threshold 2)
@@ -129,11 +143,13 @@
  '(global-auto-complete-mode t)
  '(global-auto-revert-mode t)
  '(global-hl-line-mode t)
- '(global-semantic-highlight-func-mode nil)
+ '(global-semantic-decoration-mode t)
+ '(global-semantic-highlight-edits-mode nil)
+ '(global-semantic-highlight-func-mode t)
  '(global-semantic-idle-breadcrumbs-mode nil nil (semantic/idle))
  '(global-semantic-idle-completions-mode nil nil (semantic/idle))
  '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic/idle))
- '(global-semantic-idle-summary-mode t)
+ '(global-semantic-idle-summary-mode nil)
  '(global-semantic-show-parser-state-mode t)
  '(global-visual-line-mode t)
  '(gtags-auto-update t)
@@ -177,12 +193,15 @@
 	 (quote
 		("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Completions*")))
  '(semantic-analyze-summary-function (quote semantic-format-tag-uml-prototype))
+ '(semantic-c-dependency-system-include-path
+	 (quote
+		("/usr/include" "/usr/include/gtk-2.0" "/usr/include/libxml2")))
  '(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-ghost))
  '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-ghost))
  '(semantic-completion-displayor-format-tag-function (quote semantic-format-tag-prototype))
  '(semantic-default-submodes
 	 (quote
-		(global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-completions-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode global-semantic-idle-summary-mode global-semantic-idle-local-symbol-highlight-mode)))
+		(global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode global-semantic-idle-summary-mode global-semantic-mru-bookmark-mode global-semantic-idle-local-symbol-highlight-mode)))
  '(semantic-displayor-tooltip-mode (quote verbose))
  '(semantic-ia-completion-menu-format-tag-function (quote semantic-format-tag-prototype))
  '(semantic-idle-scheduler-idle-time 0.1)
@@ -205,12 +224,12 @@
  '(yas/also-auto-indent-first-line nil)
  '(yas/global-mode nil nil (yasnippet))
  '(yas/indent-line (quote fixed))
- '(ycmd-server-command (quote ("python" "/home/pawel/tools/ycmd/ycmd/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Noto Mono" :foundry "monotype" :slant normal :weight normal :height 105 :width normal))))
  '(error ((t (:foreground "red1" :weight bold))))
  '(hl-line ((t (:background "darkviolet" :foreground "white"))))
  '(region ((t (:background "SlateBlue3"))))
@@ -220,6 +239,9 @@
 ;;---------------------------------------------------------------------------------------------------
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+
+(if (file-exists-p "~/.emacs.d/lisp/system-includes.el")
+		(load-file "~/.emacs.d/lisp/system-includes.el"))
 
 (if (< emacs-major-version 24)
 		(progn
@@ -260,32 +282,7 @@
 (semantic-mode 1)
 (require 'semantic/ia)
 (require 'semantic/bovine/gcc)
-
-;; (require 'company-ycmd)
-;; (company-ycmd-setup)
-(require 'auto-complete-clang)
-(set 'my/include-dirs '(
-												"-I/usr/include/c++/4.4"
-												"-I/usr/include/c++/4.4/i486-linux-gnu"
-												"-I/usr/include/c++/4.4/backward"
-												"-I/usr/local/include"
-												"-I/usr/lib/gcc/i486-linux-gnu/4.4.5/include"
-												"-I/usr/lib/gcc/i486-linux-gnu/4.4.5/include-fixed"
-												"-I/usr/include/i486-linux-gnu"
-												"-I/usr/include"
-												))
-(set 'ac-clang-flags  (append my/include-dirs ac-clang-flags))
-;; customisation of modes
-(defun my/semantic-hook ()
-	(add-to-list 'ac-sources 'ac-source-semantic)
-	;; (add-to-list 'ac-sources 'ac-source-clang)
-  )
-(add-hook 'c-mode-common-hook 'my/semantic-hook)
-(add-hook 'c++-mode-common-hook 'my/semantic-hook)
-;; (add-hook 'lisp-mode-hook 'my/semantic-hook)
-;; (add-hook 'scheme-mode-hook 'my/semantic-hook)
-;; (add-hook 'emacs-lisp-mode-hook 'my/semantic-hook)
-;; (add-hook 'erlang-mode-hook 'my/semantic-hook)
+(set 'semantic-dependency-system-include-path 'my/include-dirs)
 
 (semanticdb-enable-gnu-global-databases 'c-mode t)
 (semanticdb-enable-gnu-global-databases 'c++-mode t)
@@ -296,10 +293,16 @@
 			(when (cedet-ectag-version-check t)
 				(semantic-load-enable-primary-ectags-support))))
 
+;; (require 'company-ycmd)
+;; (company-ycmd-setup)
+(require 'auto-complete-clang)
+(set 'ac-clang-flags  (append my/include-dirs ac-clang-flags))
+
 (defun my/c-hook()
+	(add-to-list 'ac-sources 'ac-source-clang)
 	(global-set-key (kbd "<f6>") 'gud-gdb)
-	(local-set-key (kbd "<C-S-iso-lefttab>") 'semantic-ia-complete-symbol-menu)
 	(local-set-key (kbd "C-.") 'semantic-ia-fast-jump)
+	(local-set-key (kbd "C->") 'semantic-ia-show-summary)
 	(ecb-activate)
 	(if (>= emacs-major-version 24)
 			(progn
@@ -339,7 +342,6 @@
 	;; 									 ac-source-abbrev
 	;; 									 ac-source-dictionary
 	;; 									 ac-source-words-in-same-mode-buffers)
-	(global-set-key (kbd "<backtab>") 'auto-complete)
 	(setq py-smart-indentation t)
 	)
 (add-hook 'python-mode-hook 'my/python-hook)
@@ -350,7 +352,7 @@
   (add-to-list 'load-path "~/.emacs.d/lisp/django-mode/")
   (require 'django-html-mode)
   (require 'django-mode)
-  (yas/load-directory "/home/pawel/.emacs.d/lisp/django-mode/snippets")
+  (yas/load-directory "~/.emacs.d/lisp/django-mode/snippets")
   (add-to-list 'auto-mode-alist '("\\.djhtml$" . django-html-mode))
   )
 
@@ -373,6 +375,7 @@
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "<f12>") 'todoo-or-close-todoo)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'auto-complete)
+(global-set-key (kbd "<backtab>") 'semantic-ia-complete-symbol-menu)
 (define-key ac-completing-map "C-g" 'ac-stop)
 (global-set-key (kbd "C-e") 'ecb-goto-window-history)
 (global-set-key (kbd "C-S-e") 'ecb-goto-window-directories)

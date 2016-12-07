@@ -1,0 +1,4 @@
+alias emacs="emacsclient -c -a ''"
+alias grepnir="grep -niIr"
+alias man="LC_ALL=en_US.utf8 man"
+
