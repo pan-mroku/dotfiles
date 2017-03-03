@@ -1,5 +1,5 @@
 [merge]
-	tool = diffuse
+	tool = kdiff3
 [mergetool "diffuse"]
 	cmd = "diffuse -b"		
 [push]
@@ -7,8 +7,11 @@
 [color]
 	ui = auto
 [alias]
-	s = status -sb
 	diffw = diff -w
 	l = log --graph
+	lp = log --graph --follow -p
+	lc = log --follow --pretty=format:'%h %<(20)%Cred%an %Cgreen%s'
+	changes = log --pretty=format:\"%h\"
+	s = status -sb
 [log]
 	decorate = true

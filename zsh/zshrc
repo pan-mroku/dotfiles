@@ -34,7 +34,7 @@ bindkey "^[OF" end-of-line
 
 setopt HIST_IGNORE_DUPS
 setopt inc_append_history
-setopt share_history
+unsetopt share_history
 
 export PS1="%F{green}%n %F{red}%~%F{white}%(#.#.$) "
 export RPROMPT="%F{grey}%T%F{white}"
