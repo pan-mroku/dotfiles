@@ -9,9 +9,9 @@
 [alias]
 	diffw = diff -w
 	l = log --graph
-	lp = log --graph --follow -p
-	lc = log --follow --pretty=format:'%h %<(20)%Cred%an %Cgreen%s'
-	changes = log --pretty=format:\"%h\"
+	lp = log --graph --follow -p -w
+	lc = log -w --follow --pretty=format:'%h %<(20)%Cred%an %Cgreen%s'
+	changes = log -w --pretty=format:\"%h\"
 	s = status -sb
 [log]
 	decorate = true
