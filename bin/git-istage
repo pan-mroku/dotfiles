@@ -13,6 +13,10 @@ AskYN()
 								return 1
 								break
 								;;
+						[pP]*)
+								return 2
+								break
+								;;
 						*)
 								echo;;
 				esac
@@ -22,13 +26,18 @@ AskYN()
 OLDIFS=$IFS
 IFS=$'\n'
 
-for FILE in `git s|grep "^ .*\|^??.*"|sed 's|^...||;s| |\\ |;s|"||g'`; do
+for FILE in `git s|grep "^.M.*\|^??.*"|sed -n 's|^.M.||p;s| |\\ |;s|"||g'`; do
 		clear
 		git	diffw "`pwd`/$FILE"
-		if AskYN "$FILE: Add to commit? [y/n]" ; then
-				git add "$FILE"
-				echo
-		fi
+		AskYN "$FILE: Add to commit? [y]es/[p]atch/[n]o: "
+		case $? in
+				0)
+						git add "$FILE"
+						;;
+				2)
+						git add -p "$FILE"
+						;;
+		esac
 done
 
 IFS=$OLDIFS

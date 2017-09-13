@@ -1,3 +1,5 @@
+[include]
+    path = .gitconfig_user
 [merge]
 	tool = kdiff3
 [mergetool "diffuse"]
