@@ -1,32 +1,5 @@
 (message ".emacs start")
 
-(setq cedet-root-path (file-name-as-directory "~/.emacs.d/lisp/cedet/"))
-(load-file (concat cedet-root-path "cedet-devel-load.el"))
-(add-to-list 'load-path (concat cedet-root-path "contrib"))
-(add-to-list 'Info-directory-list
-						 (concat cedet-root-path "/doc/info"))
-
-;; http://www.emacswiki.org/emacs/CEDET_Quickstart
-(require 'cedet)
-(require 'eieio)
-(require 'eieio-speedbar)
-(require 'eieio-opt)
-(require 'eieio-base)
-(require 'ede/source)
-(require 'ede/base)
-(require 'ede/auto)
-(require 'ede/proj)
-(require 'ede/proj-archive)
-(require 'ede/proj-aux)
-(require 'ede/proj-comp)
-(require 'ede/proj-elisp)
-(require 'ede/proj-info)
-(require 'ede/proj-misc)
-(require 'ede/proj-obj)
-(require 'ede/proj-prog)
-(require 'ede/proj-scheme)
-(require 'ede/proj-shared)
-
 (if (< emacs-major-version 24)
 		(progn 
 			(add-to-list 'load-path "~/.emacs.d/lisp/before24")
@@ -46,28 +19,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-auto-show-menu t)
- '(ac-auto-start nil)
- '(ac-candidate-limit 30)
- '(ac-candidate-menu-min 1)
- '(ac-comphist-threshold 0.2)
- '(ac-delay 0.0)
- '(ac-disable-inline nil)
- '(ac-expand-on-auto-complete nil)
- '(ac-ignore-case (quote smart))
- '(ac-menu-height 20)
- '(ac-modes
-	 (quote
-		(emacs-lisp-mode lisp-interaction-mode c-mode cc-mode c++-mode java-mode clojure-mode scala-mode scheme-mode ocaml-mode tuareg-mode perl-mode cperl-mode python-mode ruby-mode ecmascript-mode javascript-mode js-mode js2-mode php-mode css-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode django-mode django-html-mode)))
- '(ac-quick-help-delay 1.0)
- '(ac-quick-help-height 10)
- '(ac-show-menu-immediately-on-auto-complete t)
- '(ac-stop-words nil)
- '(ac-trigger-key nil)
- '(ac-use-fuzzy t)
- '(ac-use-menu-map t)
  '(ansi-color-names-vector
-	 ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+	 ["#32302F" "#FB4934" "#B8BB26" "#FABD2F" "#83A598" "#D3869B" "#17CCD5" "#EBDBB2"])
+ '(bm-cycle-all-buffers t)
+ '(bm-electric-show t)
+ '(bm-in-lifo-order t)
+ '(bm-recenter t)
  '(c-basic-offset 2)
  '(c-default-style
 	 (quote
@@ -77,21 +34,25 @@
  '(c-offsets-alist (quote ((substatement-open . 0))))
  '(cc-search-directories
 	 (quote
-		("." "/usr/include" "/usr/local/include/*" "../include" "../src")))
+		("." "/usr/include" "/usr/local/include/*")))
  '(clean-buffer-list-kill-never-buffer-names
 	 (quote
 		("*scratch*" "*Messages*" "*server*" "*compilation*" "*Python*")))
- '(company-auto-complete (quote (quote company-explicit-action-p)))
- '(company-auto-complete-chars (quote (32 46)))
+ '(company-auto-complete nil)
+ '(company-auto-complete-chars (quote (32 46 34)))
  '(company-backends
 	 (quote
-		(company-cmake company-clang company-semantic company-bbdb company-nxml company-css company-eclim company-xcode company-capf company-files
-									 (company-dabbrev-code company-gtags company-etags company-keywords)
+		(company-rtags company-cmake company-clang company-dabbrev-code company-etags company-css company-files company-bbdb company-nxml company-eclim company-xcode company-capf
+									 (company-gtags company-keywords)
 									 company-oddmuse company-dabbrev)))
+ '(company-completion-started-hook nil)
  '(company-frontends
 	 (quote
-		(company-preview-if-just-one-frontend company-echo-metadata-frontend company-preview-if-just-one-frontend)))
+		(company-echo-metadata-frontend company-pseudo-tooltip-unless-just-one-frontend-with-delay)))
+ '(company-idle-delay nil)
  '(company-minimum-prefix-length 2)
+ '(company-require-match nil)
+ '(company-rtags-insert-arguments nil)
  '(compilation-ask-about-save nil)
  '(compilation-scroll-output (quote first-error))
  '(compilation-skip-threshold 2)
@@ -129,10 +90,13 @@
 		(("left16"
 			("ecb-history-buffer-name" 0.2 . 0.75)
 			(ecb-directories-buffer-name 0.2 . 0.25)))))
- '(ecb-options-version "2.40")
+ '(ecb-options-version "2.50")
  '(ecb-tip-of-the-day nil)
  '(ecb-tree-indent 2)
+ '(ede-auto-add-method (quote multi-ask))
+ ;; '(ede-project-directories (quote ("/home/..." "...")))
  '(egg-git-diff-options (quote ("--patience" "--ignore-space-change")))
+ '(etags-select-go-if-unambiguous t)
  '(etags-table-search-up-depth 5)
  '(gdb-many-windows nil)
  '(gdb-same-frame nil)
@@ -140,8 +104,9 @@
  '(ggtags-auto-jump-to-match nil)
  '(ggtags-mode-prefix-key "")
  '(ggtags-sort-by-nearness t)
- '(global-auto-complete-mode t)
+ '(global-auto-complete-mode nil)
  '(global-auto-revert-mode t)
+ '(global-company-mode t)
  '(global-hl-line-mode t)
  '(global-semantic-decoration-mode t)
  '(global-semantic-highlight-edits-mode nil)
@@ -149,17 +114,25 @@
  '(global-semantic-idle-breadcrumbs-mode nil nil (semantic/idle))
  '(global-semantic-idle-completions-mode nil nil (semantic/idle))
  '(global-semantic-idle-local-symbol-highlight-mode t nil (semantic/idle))
+ '(global-semantic-idle-scheduler-mode nil)
  '(global-semantic-idle-summary-mode nil)
  '(global-semantic-show-parser-state-mode t)
+ '(global-semantic-stickyfunc-mode t)
+ '(global-semanticdb-minor-mode nil)
  '(global-visual-line-mode t)
  '(gtags-auto-update t)
  '(gtags-grep-all-text-files t)
  '(gtags-path-style (quote relative))
+ '(gud-gdb-command-name "gdb -i=mi")
  '(gud-tooltip-mode t)
  '(inhibit-startup-screen t)
  '(initial-frame-alist (quote ((fullscreen . maximized))))
+ ;; '(irony-cdb-search-directory-list (quote ("~/..." "...")))
  '(kill-whole-line t)
  '(midnight-mode t nil (midnight))
+ '(package-selected-packages
+	 (quote
+		(flycheck flycheck-color-mode-line flycheck-rtags flycheck-status-emoji flycheck-tip flymake-python-pyflakes flymake-sass bm company-rtags rtags etags-select etags-table company-c-headers ac-etags ctags-update company-irony flycheck-irony flycheck-clang-tidy flycheck-clangcheck ## sass-mode todotxt irony-eldoc fuzzy-match fuzzy-format fuzzy ergoemacs-status ergoemacs-mode ecb darktooth-theme dark-souls ctags cpputils-cmake company-irony-c-headers cmake-project cmake-ide cmake-font-lock auto-complete-exuberant-ctags auto-complete-clang auto-complete-c-headers async ac-clang)))
  '(pop-up-windows t)
  '(popwin-mode nil)
  '(popwin:adjust-other-windows t)
@@ -185,8 +158,9 @@
 		 (sldb-mode :stick t)
 		 (slime-repl-mode)
 		 (slime-connection-list-mode))))
- '(pos-tip-background-color "color-23")
+ '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
+ '(python-shell-completion-native-enable nil)
  '(rtags-completions-enabled t)
  '(rtags-find-file-case-insensitive t)
  '(same-window-buffer-names
@@ -195,27 +169,32 @@
  '(semantic-analyze-summary-function (quote semantic-format-tag-uml-prototype))
  '(semantic-c-dependency-system-include-path
 	 (quote
-		("/usr/include" "/usr/include/gtk-2.0" "/usr/include/libxml2")))
+		("/usr/include" "/usr/include/gtk-2.0" "/usr/include/libxml2" "/usr/include/gtkmm-3.0" "/usr/include/gtk-3.0")))
  '(semantic-complete-inline-analyzer-displayor-class (quote semantic-displayor-ghost))
  '(semantic-complete-inline-analyzer-idle-displayor-class (quote semantic-displayor-ghost))
  '(semantic-completion-displayor-format-tag-function (quote semantic-format-tag-prototype))
  '(semantic-default-submodes
 	 (quote
-		(global-semantic-highlight-func-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semanticdb-minor-mode global-semantic-idle-summary-mode global-semantic-mru-bookmark-mode global-semantic-idle-local-symbol-highlight-mode)))
+		(global-semantic-highlight-func-mode global-semantic-decoration-mode global-semantic-stickyfunc-mode global-semantic-idle-scheduler-mode global-semantic-idle-summary-mode global-semantic-mru-bookmark-mode)))
  '(semantic-displayor-tooltip-mode (quote verbose))
  '(semantic-ia-completion-menu-format-tag-function (quote semantic-format-tag-prototype))
  '(semantic-idle-scheduler-idle-time 0.1)
+ '(semantic-idle-scheduler-verbose-flag nil)
  '(semanticdb-find-default-throttle
 	 (quote
 		(local project unloaded system recursive omniscience)))
+ ;; '(semanticdb-project-roots (quote ("~/...")))
  '(show-paren-mode t)
  '(speedbar-default-position (quote right))
  '(speedbar-sort-tags t)
  '(standard-indent 2)
- '(tab-stop-list (quote (2 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)))
+ '(tab-stop-list
+	 (quote
+		(1 2 8 16 24 32 40 48 56 64 72 80 88 96 104 112 120)))
  '(tab-width 2)
  '(tags-revert-without-query t)
- '(todoo-show-pop-up-window nil)
+ ;; '(tags-table-list (quote ("/home/...")))
+ '(temporary-bookmark-p nil)
  '(wg-morph-on nil)
  '(wg-prefix-key "")
  '(wg-query-for-save-on-emacs-exit nil)
@@ -224,17 +203,20 @@
  '(yas/also-auto-indent-first-line nil)
  '(yas/global-mode nil nil (yasnippet))
  '(yas/indent-line (quote fixed))
+ ;; '(ycmd-server-command (quote ("python" "/home/.../ycmd/ycmd/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Noto Mono" :foundry "monotype" :slant normal :weight normal :height 105 :width normal))))
- '(error ((t (:foreground "red1" :weight bold))))
+ '(bm-face ((t nil)))
+ '(bm-fringe-face ((t nil)))
+ '(bm-fringe-persistent-face ((t (:background "dark green" :foreground "White"))))
+ '(bm-persistent-face ((t (:background "DarkGreen" :foreground "White"))))
  '(hl-line ((t (:background "darkviolet" :foreground "white"))))
  '(region ((t (:background "SlateBlue3"))))
- '(semantic-highlight-func-current-tag-face ((t (:box (:line-width 1 :color "grey75" :style pressed-button)))))
- '(warning ((t (:foreground "gold" :weight bold)))))
+ '(semantic-highlight-func-current-tag-face ((t (:box (:line-width 1 :color "grey75" :style pressed-button))))))
 
 ;;---------------------------------------------------------------------------------------------------
 
@@ -270,14 +252,6 @@
 
 (ido-mode t)
 
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-comphist-file (expand-file-name "~/.emacs.d/ac-comphist.dat"))
-(defun auto-complete-mode-maybe ()
-  "No maybe for you. Only AC!"
-  (unless (minibufferp (current-buffer))
-    (auto-complete-mode 1))
-	)
-
 ;; ;; Activate semantic
 (semantic-mode 1)
 (require 'semantic/ia)
@@ -293,16 +267,26 @@
 			(when (cedet-ectag-version-check t)
 				(semantic-load-enable-primary-ectags-support))))
 
-;; (require 'company-ycmd)
-;; (company-ycmd-setup)
-(require 'auto-complete-clang)
-(set 'ac-clang-flags  (append my/include-dirs ac-clang-flags))
+(require 'bm)
+(defun my/jump-hook()
+	(let ((bookmark (bm-bookmark-at (point))))
+    (unless bookmark
+			(bm-bookmark-add))
+		)
+	)
 
 (defun my/c-hook()
-	(add-to-list 'ac-sources 'ac-source-clang)
 	(global-set-key (kbd "<f6>") 'gud-gdb)
-	(local-set-key (kbd "C-.") 'semantic-ia-fast-jump)
-	(local-set-key (kbd "C->") 'semantic-ia-show-summary)
+	(defun my/jump()
+		(interactive)
+		(my/jump-hook)
+		(rtags-find-symbol-at-point)
+		)
+	(local-set-key (kbd "C-.") 'my/jump)
+	(local-set-key (kbd "M-[") 'bm-previous)
+	(local-set-key (kbd "M-]") 'bm-next)
+	(local-set-key (kbd "M-\\") 'bm-show-all)
+	(local-set-key (kbd "C->") 'rtags-find-all-references-at-point)
 	(ecb-activate)
 	(if (>= emacs-major-version 24)
 			(progn
@@ -312,16 +296,12 @@
 (add-hook 'c++-mode-hook 'my/c-hook)
 (add-hook 'c-mode-hook 'my/c-hook)
 
+(add-hook 'ff-pre-find-hook 'my/jump-hook)
+
 (global-ede-mode 1)
 
 (add-to-list 'load-path "~/.emacs.d/lisp/move-border/")
 (require 'move-border)
-
-(defun todoo-or-close-todoo()
-  (interactive)
-  (if (eq major-mode 'todoo-mode)
-      (call-interactively 'todoo-save-and-exit)
-    (call-interactively 'todoo)))
 
 (add-hook 'comint-mode-hook
 					(lambda()
@@ -337,11 +317,6 @@
 				(require 'yasnippet)))
   (yas/initialize)
 	
-	;; (setq ac-sources '(ac-source-pycomplete
-	;; 									 ac-source-yasnippet
-	;; 									 ac-source-abbrev
-	;; 									 ac-source-dictionary
-	;; 									 ac-source-words-in-same-mode-buffers)
 	(setq py-smart-indentation t)
 	)
 (add-hook 'python-mode-hook 'my/python-hook)
@@ -373,10 +348,7 @@
 (global-set-key (kbd "M-<up>") 'windmove-up)
 (global-set-key (kbd "M-<down>") 'windmove-down)
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
-(global-set-key (kbd "<f12>") 'todoo-or-close-todoo)
-(global-set-key (kbd "<C-S-iso-lefttab>") 'auto-complete)
-(global-set-key (kbd "<backtab>") 'semantic-ia-complete-symbol-menu)
-(define-key ac-completing-map "C-g" 'ac-stop)
+(global-set-key (kbd "<backtab>") 'company-complete-common)
 (global-set-key (kbd "C-e") 'ecb-goto-window-history)
 (global-set-key (kbd "C-S-e") 'ecb-goto-window-directories)
 (global-set-key (kbd "<S-f2>") 'ecb-toggle-compile-window)
@@ -385,10 +357,6 @@
 (global-set-key (kbd "C-x t") 'ff-find-other-file)
 (global-set-key (kbd "<S-delete>") 'kill-whole-line)
 (global-set-key (kbd "<f5>") 'compile)
-;; (global-set-key (kbd "M-S-<up>") 'move-border-up)
-;; (global-set-key (kbd "M-S-<down>") 'move-border-down)
-(global-set-key (kbd "C--") 'move-border-left)
-(global-set-key (kbd "C-=") 'move-border-right)
 
 ;; terminator
 (define-key input-decode-map "\e[3~" [?\C-d])
